@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">AgroNet</string>
+    <string name="analyze_plant">Analyze Plant</string>
+    <string name="analyzing">Analyzing…</string>
+    <string name="selected_image">Selected plant image</string>
+    <string name="back">Back</string>
+    <string name="error_loading_model">Error: could not load the model.</string>
+    <string name="error_loading_image">Error: could not load the image.</string>
+    <string name="no_image_selected">No image selected.</string>
+    <string name="result_format">Detected class: %1$d (Confidence: %.1f%%)</string>
 </resources>
