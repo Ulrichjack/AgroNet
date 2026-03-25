@@ -1,12 +1,6 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")   // Corrigé : com au lieu de cm
-                includeGroupByRegex("com\\.google.*")    // Corrigé : com au lieu de cm
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -20,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AgroNet"
+rootProject.name = "agronet_android"
 include(":app")

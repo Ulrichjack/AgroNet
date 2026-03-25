@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFDF7">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- LOADING STATE -->
+        <LinearLayout
+            android:id="@+id/loadingState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="48dp"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminateTint="#2D6A4F"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Analyse en cours..."
+                android:textColor="#5C6B5C"
+                android:textSize="15sp"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+
+        <!-- RESULT CONTENT -->
+        <LinearLayout
+            android:id="@+id/resultContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Image Header -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="260dp">
+
+                <ImageView
+                    android:id="@+id/imgPlant"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="#E8EDE8"
+                    android:contentDescription="Photo de la feuille analysee"/>
+
+                <!-- Back Button Overlay - taille 48dp -->
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="#1A1A1A"
+                    android:elevation="2dp"
+                    android:contentDescription="Retour a l ecran camera"
+                    android:importantForAccessibility="yes"/>
+
+                <TextView
+                    android:id="@+id/tvWarning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#E6D97706"
+                    android:textColor="#92400E"
+                    android:textSize="13sp"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+            <!-- Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Disease Header -->
+                <TextView
+                    android:id="@+id/tvDisease"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textColor="#1A1A1A"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="-0.02"/>
+
+                <TextView
+                    android:id="@+id/tvConfidence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#6B7B6B"
+                    android:layout_marginTop="6dp"/>
+
+                <!-- Risk Badge -->
+                <TextView
+                    android:id="@+id/tvRiskLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_badge_risk"/>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E8EDE8"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"/>
+
+                <!-- SECTION: Immediate Actions -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Actions immediates"
+                    android:textSize="16sp"
+                    android:textColor="#1A1A1A"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvActions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#374737"
+                    android:lineSpacingMultiplier="1.5"
+                    android:background="@drawable/bg_section_card"
+                    android:padding="16dp"/>
+
+                <!-- SECTION: Natural Solution -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Solution naturelle"
+                    android:textSize="16sp"
+                    android:textColor="#1A1A1A"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvNaturalSolution"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#374737"
+                    android:lineSpacingMultiplier="1.5"
+                    android:background="@drawable/bg_section_card"
+                    android:padding="16dp"/>
+
+                <!-- SECTION: Resistant Varieties -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Varietes resistantes (IRAD)"
+                    android:textSize="16sp"
+                    android:textColor="#1A1A1A"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvVarieties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#374737"
+                    android:lineSpacingMultiplier="1.5"
+                    android:background="@drawable/bg_section_card"
+                    android:padding="16dp"/>
+
+                <!-- SECTION: Contacts -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ou trouver de l aide"
+                    android:textSize="16sp"
+                    android:textColor="#1A1A1A"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvContacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#374737"
+                    android:lineSpacingMultiplier="1.5"
+                    android:background="@drawable/bg_section_card"
+                    android:padding="16dp"/>
+
+                <!-- Disclaimer -->
+                <TextView
+                    android:id="@+id/tvDisclaimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="#9CA39C"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginTop="24dp"
+                    android:padding="16dp"
+                    android:background="@drawable/bg_section_subtle"/>
+
+                <!-- BUTTONS -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAlert"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Envoyer une alerte GPS"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="sans-serif-medium"
+                    app:cornerRadius="14dp"
+                    android:backgroundTint="#DC2626"
+                    android:layout_marginTop="24dp"
+                    android:visibility="gone"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRetake"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Nouvelle analyse"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="sans-serif-medium"
+                    app:cornerRadius="14dp"
+                    android:backgroundTint="#2D6A4F"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="32dp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
