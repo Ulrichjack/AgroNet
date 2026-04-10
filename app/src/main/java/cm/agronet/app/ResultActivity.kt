@@ -22,6 +22,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class ResultActivity : AppCompatActivity() {
 
@@ -54,6 +56,11 @@ class ResultActivity : AppCompatActivity() {
         "Plant Sain",
         "Mosaïque du Manioc (CMD)"
     )
+
+    // ─── GPS Coordinates for Firebase ───────────────────────
+    private var currentLat: Double? = null
+    private var currentLon: Double? = null
+    private var detectedDisease: String = "Inconnu"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -233,6 +240,7 @@ class ResultActivity : AppCompatActivity() {
             }
         }
         buffer.rewind()
+        scaled.recycle()
         return buffer
     }
 
@@ -258,6 +266,8 @@ class ResultActivity : AppCompatActivity() {
 
         val recommendations = getRecommendations(classIndex, confidencePct)
         displayRecommendations(recommendations, confidencePct, classIndex)
+        tvDisease.text = CLASS_LABELS[classIndex]
+        detectedDisease = CLASS_LABELS[classIndex]
     }
 
     // ─── Recommandations — Textes Professionnels ─────────────
@@ -448,13 +458,48 @@ class ResultActivity : AppCompatActivity() {
     }
 
     // ─── Alerte GPS ───────────────────────────────────────────
+    // ─── Alerte GPS & Firebase ────────────────────────────────
     private fun sendGPSAlert() {
-        Toast.makeText(
-            this,
-            "Alerte GPS en cours d'envoi aux autorités locales...",
-            Toast.LENGTH_LONG
-        ).show()
-        // TODO Sprint 2 : Firebase Firestore
+        val lat = currentLat
+        val lon = currentLon
+
+        if (lat == null || lon == null) {
+            Toast.makeText(this, "Position GPS introuvable. Patientez...", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "⚠️ Aucune connexion internet. Impossible d'envoyer l'alerte au MINADER.", Toast.LENGTH_LONG).show()
+            return // Stop here!
+        }
+
+        // Change button state so the user doesn't click twice
+        btnAlert.isEnabled = false
+        btnAlert.text = "Envoi en cours..."
+
+        // 1. Prepare the data
+        val alertData = hashMapOf(
+            "disease" to detectedDisease,
+            "latitude" to lat,
+            "longitude" to lon,
+            "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+            "status" to "NOUVELLE ALERTE"
+        )
+
+        // 2. Send to Firestore
+        val db = Firebase.firestore
+        db.collection("alerts")
+            .add(alertData)
+            .addOnSuccessListener { documentReference ->
+                Toast.makeText(this, "✅ Alerte envoyée au MINADER !", Toast.LENGTH_LONG).show()
+                btnAlert.text = "Alerte envoyée"
+                btnAlert.setBackgroundColor(Color.parseColor("#2E7D32")) // Turn green
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "❌ Erreur réseau : ${e.message}", Toast.LENGTH_LONG).show()
+                btnAlert.isEnabled = true
+                btnAlert.text = "Envoyer une alerte GPS"
+            }
     }
 
     // ─── Gestion des erreurs ──────────────────────────────────
@@ -511,27 +556,43 @@ class ResultActivity : AppCompatActivity() {
     private fun loadWeather() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    fetchAndDisplayWeather(location.latitude, location.longitude)
-                } else {
-                    // Fallback Yaoundé
-                    fetchAndDisplayWeather(3.84, 11.50)
+
+            fusedLocationClient.getCurrentLocation(com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        Log.d("AgroNet", " REAL GPS FOUND: ${location.latitude}, ${location.longitude}")
+                        fetchAndDisplayWeather(location.latitude, location.longitude)
+                    } else {
+                        Log.w("AgroNet", "⚠️ GPS Signal Lost")
+                        // ❌ WE REMOVED YAOUNDE FALLBACK
+                        Toast.makeText(this, "En attente du signal GPS...", Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener {
+                    Log.e("AgroNet", "❌ GPS Error")
+                    Toast.makeText(this, "Erreur GPS. Activez votre localisation.", Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener {
-                fetchAndDisplayWeather(3.84, 11.50)
-            }
         } else {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
                 200
             )
-            fetchAndDisplayWeather(3.84, 11.50)
         }
     }
 
+    // ─── Network Safety Check ────────────────────────────────
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+        return capabilities.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
     private fun fetchAndDisplayWeather(lat: Double, lon: Double) {
+
+        currentLat = lat
+        currentLon = lon
+
         lifecycleScope.launch(Dispatchers.IO) {
             val weatherData = fetchWeather(lat, lon)
             withContext(Dispatchers.Main) {

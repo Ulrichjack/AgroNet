@@ -21,7 +21,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnMap.setOnClickListener {
-            Toast.makeText(this, "Carte - bientot disponible", Toast.LENGTH_SHORT).show()
+            //  Open the new Map!
+            val intent = Intent(this, MapActivity::class.java)
+            startActivity(intent)
         }
     }
 }

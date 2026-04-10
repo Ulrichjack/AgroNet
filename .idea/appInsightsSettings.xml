@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="cm.agronet.app" />
+                  <option name="mobileSdkAppId" value="1:556227588940:android:7bf363d222b1c8c4db15e9" />
+                  <option name="projectId" value="agronet-6edaa" />
+                  <option name="projectNumber" value="556227588940" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
